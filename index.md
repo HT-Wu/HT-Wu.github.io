@@ -1,5 +1,6 @@
 ---
-title: Main Page
+layout: page
+title: "Main Page"
 ___
 
 # HaiTian (HT) Wu
