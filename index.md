@@ -8,3 +8,4 @@ title: "Main Page"
 Welcome! This is my personal website.
 
 ## Resources
+[Coursework](coursework.md)
