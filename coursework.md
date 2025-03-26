@@ -32,7 +32,7 @@ PHYS 0500 - Advanced Classical Mechanics
 
 ### Fall 2024
 
-MATH 1210 - Probability
+[MATH 1210](coursework/fall-2024/MATH1210/MATH1210.md) - Probability
 
 MATH 1630 - Real Analysis
 
