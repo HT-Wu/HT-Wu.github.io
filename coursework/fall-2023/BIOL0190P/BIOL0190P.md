@@ -18,4 +18,4 @@ Midterm Presentation: [Stephen Hawking: A Modern Darwin?](coursework/fall-2023/B
 
 Final Paper: [The Limits of Physics: Lord Kelvin’s Estimate for the Age of the Earth](coursework/fall-2023/BIOL0190P/BIOl0190P-final-paper.pdf)
 
-[Back to Coursework](coursework.md)
+[Back to Coursework](/coursework.md)
