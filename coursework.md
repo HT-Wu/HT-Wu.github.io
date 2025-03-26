@@ -6,6 +6,8 @@ permalink: /coursework/
 
 # Coursework
 
+**DISCLAIMER:** The accuracy/correctness of the information here is not guaranteed. Please contact me if you find any errors.
+
 ## Undergraduate (Brown University)
 
 ### Fall 2023
