@@ -14,8 +14,8 @@ permalink: /coursework/fall-2023/BIOL0190P/
 
 ## Files:
 
-Midterm Presentation: [Stephen Hawking: A Modern Darwin?](coursework/fall-2023/BIOL0190P/BIOL0190P-midterm-presentation.pptx)
+Midterm Presentation: [Stephen Hawking: A Modern Darwin?](BIOL0190P-midterm-presentation.pptx)
 
-Final Paper: [The Limits of Physics: Lord Kelvin’s Estimate for the Age of the Earth](coursework/fall-2023/BIOL0190P/BIOl0190P-final-paper.pdf)
+Final Paper: [The Limits of Physics: Lord Kelvin’s Estimate for the Age of the Earth](BIOL0190P-final-paper.pdf)
 
 [Back to Coursework](/coursework.md)
