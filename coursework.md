@@ -10,7 +10,7 @@ permalink: /coursework/
 
 ### Fall 2023
 
-[BIOL 0190P](coursework/fall-2023/BIOL0190P.md) - Pride and Prejudice in the Development of Scientific Theories
+[BIOL 0190P](coursework/fall-2023/BIOL0190P/BIOL0190P.md) - Pride and Prejudice in the Development of Scientific Theories
 
 CSCI 0170 - Computer Science: An Integrated Introduction
 
