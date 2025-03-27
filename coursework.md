@@ -50,7 +50,7 @@ PHYS 1560 - Modern Physics Laboratory
 
 PHYS 2060 - Quantum Mechanics
 
-PHYS 2140 - Statistical Mechanics
+[PHYS 2140](coursework/spring-2025/PHYS2140/PHYS2140.md) - Statistical Mechanics
 
 ### Fall 2025
 
