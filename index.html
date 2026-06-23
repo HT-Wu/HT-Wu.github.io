@@ -25,10 +25,11 @@
     <header>
         <img src="profile.jpg" alt="Profile" class="profile-pic" onerror="this.style.display='none'">
         <div class="bio">
-            <h1>HaiTian (HT Wu)</h1>
+            <h1>HaiTian (HT) Wu</h1>
             <p>Undergraduate Physics Student at Brown University. Interested in experimental condensed matter physics and quantum materials.</p>
             <div class="links">
                 <a href="mailto:haitian_wu@brown.edu">haitian_wu@brown.edu</a>
+                <a href="cv.pdf" target="_blank">CV</a>
                 <a href="https://scholar.google.com/citations?user=N4jdFrQAAAAJ&hl=en" target="_blank">Google Scholar</a>
             </div>
         </div>
@@ -47,7 +48,6 @@
         async function fetchNotes() {
             const list = document.getElementById('pdf-list');
             try {
-                // Updated URL to append the folder path
                 const res = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${folderPath}`);
                 if (!res.ok) throw new Error();
                 const files = await res.json();
