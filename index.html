@@ -43,11 +43,13 @@
     <script>
         const repoOwner = 'HT-Wu';
         const repoName = 'HT-Wu.github.io';
-        
+        const folderPath = 'notes'; // <-- Add your folder name here
+
         async function fetchNotes() {
             const list = document.getElementById('pdf-list');
             try {
-                const res = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/`);
+                // Updated URL to append the folder path
+                const res = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${folderPath}`);
                 if (!res.ok) throw new Error();
                 const files = await res.json();
                 
@@ -59,7 +61,8 @@
                     const li = document.createElement('li');
                     li.className = 'note-item';
                     const a = document.createElement('a');
-                    a.href = f.path;
+                    // Point the link to the relative folder path
+                    a.href = `${folderPath}/${f.name}`;
                     a.textContent = f.name.replace('.pdf', '').replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
                     li.appendChild(a);
                     list.appendChild(li);
