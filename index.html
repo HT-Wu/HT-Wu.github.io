@@ -26,7 +26,7 @@
         <img src="profile.jpg" alt="Profile" class="profile-pic" onerror="this.style.display='none'">
         <div class="bio">
             <h1>HaiTian (HT) Wu</h1>
-            <p>Undergraduate Physics Student at Brown University. Interested in experimental condensed matter physics and quantum materials.</p>
+            <p>Undergraduate physics and math student at Brown University. Interested in experimental condensed matter physics and quantum materials.</p>
             <div class="links">
                 <a href="mailto:haitian_wu@brown.edu">haitian_wu@brown.edu</a>
                 <a href="cv.pdf" target="_blank">CV</a>
@@ -61,42 +61,60 @@
                 pdfs.forEach(f => {
                     const li = document.createElement('li');
                     li.className = 'note-item';
+                    li.style.display = 'flex';
+                    li.style.alignItems = 'center';
+                    li.style.marginBottom = '12px';
                     
-                    // Check if the filename starts with an 8-digit date pattern (e.g., 20260623)
-                    const dateMatch = f.name.match(/^(\d{4})(\d{2})(\d{2})_(.+)\.pdf$/);
+                    // Extract parts: 1=Date, 2=Core Name, 3=Tag (optional)
+                    const pattern = /^(\d{4})(\d{2})(\d{2})_(.*?)(?:--([a-zA-Z0-9]+))?\.pdf$/;
+                    const match = f.name.match(pattern);
                     
                     let displayTitle = f.name.replace('.pdf', '').replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
                     let dateBadge = '';
+                    let tagBadge = '';
                 
-                    if (dateMatch) {
-                        const year = dateMatch[1];
-                        const month = dateMatch[2];
-                        const day = dateMatch[3];
-                        const rawTitle = dateMatch[4];
+                    if (match) {
+                        const year = match[1];
+                        const month = match[2];
+                        const day = match[3];
+                        const rawTitle = match[4];
+                        const tag = match[5];
                 
-                        // Format the date string into a standard presentation format
+                        // Format Date
                         const dateObj = new Date(`${year}-${month}-${day}T00:00:00`);
-                        const formattedDate = dateObj.toLocaleDateString('en-US', {
-                            month: 'short',
-                            day: 'numeric',
-                            year: 'numeric'
-                        });
+                        const formattedDate = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                        dateBadge = `<span style="color: #666; font-size: 0.9rem; margin-right: 15px; min-width: 95px; font-variant-numeric: tabular-nums;">${formattedDate}</span>`;
                 
-                        // Clean up the remaining filename for the title display
+                        // Clean Title
                         displayTitle = rawTitle.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
-                        
-                        // Create a muted text badge for the date layout
-                        dateBadge = `<span style="color: #666; font-size: 0.9rem; margin-right: 15px; font-variant-numeric: tabular-nums;">${formattedDate}</span>`;
+                
+                        // Format Tag Badge if it exists
+                        if (tag) {
+                            // Simple hash to assign consistent colors based on the tag string
+                            const colors = {
+                                physics: { bg: '#eef2ff', text: '#4f46e5' },
+                                math: { bg: '#ecfdf5', text: '#059669' },
+                                other: { bg: '#fff7ed', text: '#ea580c' }
+                            };
+                            const pair = colors[tag.toLowerCase()] || { bg: '#f3f4f6', text: '#4b5563' }; // fallback gray
+                            
+                            tagBadge = `<span style="background: ${pair.bg}; color: ${pair.text}; font-size: 0.75rem; font-weight: 600; padding: 2px 8px; border-radius: 4px; margin-left: 10px; text-transform: uppercase; letter-spacing: 0.5px;">${tag}</span>`;
+                        }
                     }
                 
                     const a = document.createElement('a');
-                    // Ensure this matches your directory routing (e.g., f.path or `${folderPath}/${f.name}`)
                     a.href = f.path; 
                     a.textContent = displayTitle;
+                    a.style.color = 'var(--link)';
+                    a.style.textDecoration = 'none';
+                    a.style.fontWeight = '500';
                 
-                    // Structure the line items to place the timestamp before the hyperlink text
+                    // Construct the row layout
                     li.innerHTML = dateBadge;
                     li.appendChild(a);
+                    if (tagBadge) {
+                        li.insertAdjacentHTML('beforeend', tagBadge);
+                    }
                     list.appendChild(li);
                 });
             } catch (e) {
