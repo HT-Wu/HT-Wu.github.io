@@ -52,17 +52,50 @@
                 if (!res.ok) throw new Error();
                 const files = await res.json();
                 
-                const pdfs = files.filter(f => f.name.endsWith('.pdf'));
+                // Filter for PDFs and reverse the order so the newest date is at the top
+                const pdfs = files.filter(f => f.name.endsWith('.pdf')).reverse();
+                
                 if (pdfs.length === 0) { list.innerHTML = '<li>No notes uploaded yet.</li>'; return; }
                 
                 list.innerHTML = '';
                 pdfs.forEach(f => {
                     const li = document.createElement('li');
                     li.className = 'note-item';
+                    
+                    // Check if the filename starts with an 8-digit date pattern (e.g., 20260623)
+                    const dateMatch = f.name.match(/^(\d{4})(\d{2})(\d{2})_(.+)\.pdf$/);
+                    
+                    let displayTitle = f.name.replace('.pdf', '').replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+                    let dateBadge = '';
+                
+                    if (dateMatch) {
+                        const year = dateMatch[1];
+                        const month = dateMatch[2];
+                        const day = dateMatch[3];
+                        const rawTitle = dateMatch[4];
+                
+                        // Format the date string into a standard presentation format
+                        const dateObj = new Date(`${year}-${month}-${day}T00:00:00`);
+                        const formattedDate = dateObj.toLocaleDateString('en-US', {
+                            month: 'short',
+                            day: 'numeric',
+                            year: 'numeric'
+                        });
+                
+                        // Clean up the remaining filename for the title display
+                        displayTitle = rawTitle.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+                        
+                        // Create a muted text badge for the date layout
+                        dateBadge = `<span style="color: #666; font-size: 0.9rem; margin-right: 15px; font-variant-numeric: tabular-nums;">${formattedDate}</span>`;
+                    }
+                
                     const a = document.createElement('a');
-                    // Point the link to the relative folder path
-                    a.href = `${folderPath}/${f.name}`;
-                    a.textContent = f.name.replace('.pdf', '').replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+                    // Ensure this matches your directory routing (e.g., f.path or `${folderPath}/${f.name}`)
+                    a.href = f.path; 
+                    a.textContent = displayTitle;
+                
+                    // Structure the line items to place the timestamp before the hyperlink text
+                    li.innerHTML = dateBadge;
                     li.appendChild(a);
                     list.appendChild(li);
                 });
