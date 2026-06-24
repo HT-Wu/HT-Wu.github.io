@@ -16,8 +16,62 @@
         h2 { border-bottom: 1px solid var(--border); padding-bottom: 6px; font-size: 1.3rem; }
         ul { list-style: none; padding: 0; }
         li { margin-bottom: 12px; }
+        
+        /* Containers with customized scroll heights */
+        .news-container {
+            max-height: 180px; 
+            overflow-y: auto;
+            padding-right: 10px;
+            border-left: 2px solid var(--border);
+            padding-left: 15px;
+        }
+        .notes-container {
+            max-height: 400px; 
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+        
+        /* Shared scrollbar cosmetics */
+        .news-container::-webkit-scrollbar,
+        .notes-container::-webkit-scrollbar {
+            width: 4px;
+        }
+        .news-container::-webkit-scrollbar-thumb,
+        .notes-container::-webkit-scrollbar-thumb {
+            background-color: var(--border);
+            border-radius: 4px;
+        }
+        
+        .news-item {
+            font-size: 0.95rem;
+            margin-bottom: 12px;
+            line-height: 1.4;
+            word-wrap: break-word;
+        }
+        .news-date {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #666;
+            margin-right: 8px;
+            text-transform: uppercase;
+        }
+        .note-item {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
         .note-item a { font-weight: 500; color: var(--link); text-decoration: none; }
         .note-item a:hover { text-decoration: underline; }
+
+        /* Auto System Dark Mode Support */
+        @media (prefers-color-scheme: dark) {
+            :root { --text: #e0e0e0; --link: #66b2ff; --border: #333; }
+            body { background-color: #121212; }
+            h2 { color: #fff; }
+            .news-date { color: #999; }
+        }
     </style>
 </head>
 <body>
@@ -35,16 +89,53 @@
         </div>
     </header>
 
-    <section>
+    <section id="news">
+        <h2>Recent Updates</h2>
+        <div class="news-container" id="news-box">Loading updates...</div>
+    </section>
+
+    <section id="notes">
         <h2>Notes</h2>
-        <ul id="pdf-list">Loading published notes...</ul>
+        <div class="notes-container">
+            <ul id="pdf-list">Loading published notes...</ul>
+        </div>
     </section>
 
     <script>
         const repoOwner = 'HT-Wu';
         const repoName = 'HT-Wu.github.io';
-        const folderPath = 'notes'; // <-- Add your folder name here
+        const folderPath = 'notes'; 
 
+        // 1. ASYNC EXTERNAL NEWS PARSER
+        async function loadNews() {
+            const newsBox = document.getElementById('news-box');
+            try {
+                const res = await fetch('news.txt');
+                if (!res.ok) throw new Error();
+                const text = await res.text();
+                
+                const lines = text.split('\n').filter(line => line.trim() !== '');
+                if (lines.length === 0) { newsBox.innerHTML = 'No recent updates.'; return; }
+                
+                newsBox.innerHTML = '';
+                lines.forEach(line => {
+                    const parts = line.split('|');
+                    if (parts.length >= 2) {
+                        const date = parts[0].trim();
+                        const content = parts.slice(1).join('|').trim();
+                        
+                        const item = document.createElement('div');
+                        item.className = 'news-item';
+                        item.innerHTML = `<span class="news-date">${date}</span> ${content}`;
+                        newsBox.appendChild(item);
+                    }
+                });
+            } catch (e) {
+                newsBox.innerHTML = 'Failed to load updates. Check news.txt formatting.';
+            }
+        }
+
+        // 2. ASYNC NOTES DIRECTORY MATRIX
         async function fetchNotes() {
             const list = document.getElementById('pdf-list');
             try {
@@ -52,8 +143,8 @@
                 if (!res.ok) throw new Error();
                 const files = await res.json();
                 
-                // Filter for PDFs and reverse the order so the newest date is at the top
-                const pdfs = files.filter(f => f.name.endsWith('.pdf')).reverse();
+                // Filter out non-PDF files and core document files
+                const pdfs = files.filter(f => f.name.endsWith('.pdf') && f.name !== 'cv.pdf' && f.name !== 'resume.pdf').reverse();
                 
                 if (pdfs.length === 0) { list.innerHTML = '<li>No notes uploaded yet.</li>'; return; }
                 
@@ -61,11 +152,7 @@
                 pdfs.forEach(f => {
                     const li = document.createElement('li');
                     li.className = 'note-item';
-                    li.style.display = 'flex';
-                    li.style.alignItems = 'center';
-                    li.style.marginBottom = '12px';
                     
-                    // Extract parts: 1=Date, 2=Core Name, 3=Tag (optional)
                     const pattern = /^(\d{4})(\d{2})(\d{2})_(.*?)(?:--([a-zA-Z0-9]+))?\.pdf$/;
                     const match = f.name.match(pattern);
                     
@@ -83,33 +170,27 @@
                         // Format Date
                         const dateObj = new Date(`${year}-${month}-${day}T00:00:00`);
                         const formattedDate = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-                        dateBadge = `<span style="color: #666; font-size: 0.9rem; margin-right: 15px; min-width: 95px; font-variant-numeric: tabular-nums;">${formattedDate}</span>`;
+                        dateBadge = `<span style="color: #666; font-size: 0.9rem; min-width: 95px; font-variant-numeric: tabular-nums;">${formattedDate}</span>`;
                 
                         // Clean Title
                         displayTitle = rawTitle.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
                 
-                        // Format Tag Badge if it exists
+                        // Format Tag Badge
                         if (tag) {
-                            // Simple hash to assign consistent colors based on the tag string
                             const colors = {
                                 physics: { bg: '#eef2ff', text: '#4f46e5' },
                                 math: { bg: '#ecfdf5', text: '#059669' },
                                 other: { bg: '#fff7ed', text: '#ea580c' }
                             };
-                            const pair = colors[tag.toLowerCase()] || { bg: '#f3f4f6', text: '#4b5563' }; // fallback gray
-                            
-                            tagBadge = `<span style="background: ${pair.bg}; color: ${pair.text}; font-size: 0.75rem; font-weight: 600; padding: 2px 8px; border-radius: 4px; margin-left: 10px; text-transform: uppercase; letter-spacing: 0.5px;">${tag}</span>`;
+                            const pair = colors[tag.toLowerCase()] || { bg: '#f3f4f6', text: '#4b5563' };
+                            tagBadge = `<span style="background: ${pair.bg}; color: ${pair.text}; font-size: 0.75rem; font-weight: 600; padding: 2px 8px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.5px;">${tag}</span>`;
                         }
                     }
                 
                     const a = document.createElement('a');
-                    a.href = f.path; 
+                    a.href = `${folderPath}/${f.name}`; 
                     a.textContent = displayTitle;
-                    a.style.color = 'var(--link)';
-                    a.style.textDecoration = 'none';
-                    a.style.fontWeight = '500';
                 
-                    // Construct the row layout
                     li.innerHTML = dateBadge;
                     li.appendChild(a);
                     if (tagBadge) {
@@ -121,6 +202,9 @@
                 list.innerHTML = '<li>Error loading directory listing.</li>';
             }
         }
+
+        // Initialize execution sequences
+        loadNews();
         fetchNotes();
     </script>
 </body>
