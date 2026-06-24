@@ -67,10 +67,14 @@
 
         /* Auto System Dark Mode Support */
         @media (prefers-color-scheme: dark) {
-            :root { --text: #e0e0e0; --link: #66b2ff; --border: #333; }
+            :root { 
+                --text: #e0e0e0; 
+                --link: #4da6ff; /* High-contrast blue for dark mode readability */
+                --border: #333; 
+            }
             body { background-color: #121212; }
             h2 { color: #fff; }
-            .news-date { color: #999; }
+            .news-date { color: #aaa; }
         }
     </style>
 </head>
@@ -172,8 +176,9 @@
                         const formattedDate = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
                         dateBadge = `<span style="color: #666; font-size: 0.9rem; min-width: 95px; font-variant-numeric: tabular-nums;">${formattedDate}</span>`;
                 
-                        // Clean Title
-                        displayTitle = rawTitle.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+                        // Clean Title (Converts triple hyphens '---' into colons before handling casing transformations)
+                        let stringWithColon = rawTitle.replace(/---/g, ': ');
+                        displayTitle = stringWithColon.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
                 
                         // Format Tag Badge
                         if (tag) {
