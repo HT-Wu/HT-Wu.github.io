@@ -83,6 +83,13 @@
             a:link, a:visited {
                 color: var(--link) !important;
             }
+
+            /* Dark mode adaptation for notes tag badges */
+            .note-item span[style*="background"] {
+                background-color: #1e1e1e !important;
+                border: 1px solid var(--border);
+                filter: brightness(1.2);
+            }
         }
     </style>
 </head>
@@ -191,11 +198,14 @@
                         // Format Tag Badge
                         if (tag) {
                             const colors = {
-                                physics: { bg: '#eef2ff', text: '#4f46e5' },
-                                math: { bg: '#ecfdf5', text: '#059669' },
-                                other: { bg: '#fff7ed', text: '#ea580c' }
+                                explanations: { bg: '#eef2ff', text: '#4f46e5' }, // Indigo
+                                research:     { bg: '#f0fdfa', text: '#0d9488' }, // Teal
+                                other:        { bg: '#f3f4f6', text: '#4b5563' }  // Gray
                             };
-                            const pair = colors[tag.toLowerCase()] || { bg: '#f3f4f6', text: '#4b5563' };
+                            
+                            // Exact dictionary match or fall back to an elegant amber color for custom tags/typos
+                            const pair = colors[tag.toLowerCase()] || { bg: '#fef3c7', text: '#b45309' };
+                            
                             tagBadge = `<span style="background: ${pair.bg}; color: ${pair.text}; font-size: 0.75rem; font-weight: 600; padding: 2px 8px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.5px;">${tag}</span>`;
                         }
                     }
