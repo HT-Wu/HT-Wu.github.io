@@ -175,7 +175,7 @@
                     const pattern = /^(\d{4})(\d{2})(\d{2})_(.*?)(?:--([a-zA-Z0-9]+))?\.pdf$/;
                     const match = f.name.match(pattern);
                     
-                    let displayTitle = f.name.replace('.pdf', '').replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+                    let displayTitle = f.name.replace('.pdf', '').replace(/_/g, ' ');
                     let dateBadge = '';
                     let tagBadge = '';
                 
@@ -193,7 +193,7 @@
                 
                         // Clean Title (Converts triple hyphens '---' into colons before handling casing transformations)
                         let stringWithColon = rawTitle.replace(/---/g, ': ');
-                        displayTitle = stringWithColon.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+                        displayTitle = stringWithColon.replace(/_/g, ' ');
                 
                         // Format Tag Badge
                         if (tag) {
